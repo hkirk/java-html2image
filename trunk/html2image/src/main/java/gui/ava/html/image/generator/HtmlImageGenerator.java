@@ -79,7 +79,7 @@ public class HtmlImageGenerator {
 				markup.append(String.format("<area href=\"%s\" coords=\"%s,%s,%s,%s\" shape=\"rect\"", link.getHref(), x1, y1, x2, y2));
 				final String title = link.getTitle();
 				if (title != null && !title.equals("")) {
-					markup.append(" title=\"").append(title.replace("\"","&quot;")).append("\"");
+					markup.append(" title=\"").append(title.replace("\"", "&quot;")).append("\"");
 				}
 				markup.append(">\n");
 			}
@@ -98,7 +98,7 @@ public class HtmlImageGenerator {
 			writer = new FileWriter(file);
 			writer.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n");
 			writer.append("<html>\n<head></head>\n");
-			writer.append("<body style=\"margin: 0; padding: 0;\">\n");
+			writer.append("<body style=\"margin: 0; padding: 0; text-align: center;\">\n");
 			final String htmlMap = getLinksMapMarkup("map");
 			writer.write(htmlMap);
 			writer.append("<img border=\"0\" usemap=\"#map\" src=\"");
