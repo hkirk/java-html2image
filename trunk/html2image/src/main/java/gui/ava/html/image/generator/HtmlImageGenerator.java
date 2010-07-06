@@ -66,10 +66,9 @@ public class HtmlImageGenerator {
 	}
 
 	public String getLinksMapMarkup(String mapName) {
-		final LinkHarvester harvester = new LinkHarvester(editorPane);
 		final StringBuilder markup = new StringBuilder();
 		markup.append("<map name=\"").append(mapName).append("\">\n");
-		for (LinkInfo link : harvester.getLinks()) {
+		for (LinkInfo link : getLinks()) {
 			final List<Rectangle> bounds = link.getBounds();
 			for (Rectangle bound : bounds) {
 				final int x1 = (int) bound.getX();
@@ -86,6 +85,11 @@ public class HtmlImageGenerator {
 		}
 		markup.append("</map>\n");
 		return markup.toString();
+	}
+
+	public List<LinkInfo> getLinks() {
+		final LinkHarvester harvester = new LinkHarvester(editorPane);
+		return harvester.getLinks();
 	}
 
 	public void saveAsHtmlWithMap(String file, String imageUrl) {
