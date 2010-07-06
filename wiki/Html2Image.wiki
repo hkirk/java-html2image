@@ -1,1 +1,2 @@
+This is the name of this util.
 See [http://code.google.com/p/java-html2image/ html2image]
