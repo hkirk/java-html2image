@@ -1,1 +1,1 @@
-See html2image[http://code.google.com/p/java-html2image/]
+See [http://code.google.com/p/java-html2image/ html2image]
