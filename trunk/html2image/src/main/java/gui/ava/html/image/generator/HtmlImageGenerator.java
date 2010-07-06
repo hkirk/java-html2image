@@ -16,6 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Yoav Aharoni
@@ -75,10 +76,11 @@ public class HtmlImageGenerator {
 				final int y1 = (int) bound.getY();
 				final int x2 = (int) (x1 + bound.getWidth());
 				final int y2 = (int) (y1 + bound.getHeight());
-				markup.append(String.format("<area href=\"%s\" coords=\"%s,%s,%s,%s\" shape=\"rect\"", link.getHref(), x1, y1, x2, y2));
-				final String title = link.getTitle();
-				if (title != null && !title.equals("")) {
-					markup.append(" title=\"").append(title.replace("\"", "&quot;")).append("\"");
+				markup.append(String.format("<area coords=\"%s,%s,%s,%s\" shape=\"rect\"", x1, y1, x2, y2));
+				for (Map.Entry<String, String> entry : link.getAttributes().entrySet()) {
+					String attName = entry.getKey();
+					String value = entry.getValue();
+					markup.append(" ").append(attName).append("=\"").append(value.replace("\"", "&quot;")).append("\"");
 				}
 				markup.append(">\n");
 			}
@@ -136,7 +138,6 @@ public class HtmlImageGenerator {
 			throw new RuntimeException(String.format("Exception while saving '%s' image", file), e);
 		}
 	}
-
 
 	protected void onDocumentLoad() {
 	}
