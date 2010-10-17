@@ -1,4 +1,4 @@
-package gui.ava.html.image.util;
+package gui.ava.html.renderer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +15,7 @@ public class FormatNameUtil {
 		types.put("jpg", "jpg");
 		types.put("jpeg", "jpg");
 		types.put("png", "png");
+		types.put("bmp", "bmp");
 	}
 
 	public static String formatForExtension(String extension) {
@@ -23,6 +24,10 @@ public class FormatNameUtil {
 			return DEFAULT_FORMAT;
 		}
 		return type;
+	}
+
+	public static String getDefaultFormat() {
+		return DEFAULT_FORMAT;
 	}
 
 	public static String formatForFilename(String fileName) {
