@@ -1,6 +1,5 @@
-package gui.ava.html.image.util;
+package gui.ava.html.renderer;
 
-import gui.ava.html.image.util.FormatNameUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -33,7 +32,7 @@ public class FormatNameUtilTest {
 	}
 
 	@Test
-	public void testNoExt() {
+	public void testNoExtension() {
 		final String format = FormatNameUtil.formatForFilename("name.");
 		Assert.assertEquals("png", format);
 	}
