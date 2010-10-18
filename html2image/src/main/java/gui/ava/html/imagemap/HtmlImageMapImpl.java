@@ -82,7 +82,7 @@ public class HtmlImageMapImpl implements HtmlImageMap {
 	public void saveImageMapDocument(Writer writer, String imageURL, boolean closeWriter) {
 		try {
 			writer.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n");
-			writer.append("<html>\n<head></head>\n");
+			writer.append("<html>\n<head><style>area {cursor: pointer;}</style></head>\n");
 			writer.append("<body style=\"margin: 0; padding: 0; text-align: center;\">\n");
 			saveImageMap(writer, "map", imageURL);
 			writer.append("<img border=\"0\" usemap=\"#map\" src=\"");
