@@ -81,28 +81,34 @@ public class ImageRendererImpl implements ImageRenderer {
 		return this;
 	}
 
+	@Override
 	public float getWriteCompressionQuality() {
 		return writeCompressionQuality;
 	}
 
+	@Override
 	public ImageRenderer setWriteCompressionQuality(float writeCompressionQuality) {
 		this.writeCompressionQuality = writeCompressionQuality;
 		return this;
 	}
 
+	@Override
 	public int getWriteCompressionMode() {
 		return writeCompressionMode;
 	}
 
+	@Override
 	public ImageRenderer setWriteCompressionMode(int writeCompressionMode) {
 		this.writeCompressionMode = writeCompressionMode;
 		return this;
 	}
 
+	@Override
 	public String getWriteCompressionType() {
 		return writeCompressionType;
 	}
 
+	@Override
 	public ImageRenderer setWriteCompressionType(String writeCompressionType) {
 		this.writeCompressionType = writeCompressionType;
 		return this;

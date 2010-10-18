@@ -165,11 +165,11 @@ public class HtmlImageMapImpl implements HtmlImageMap {
 		if (styleable instanceof InlineLayoutBox) {
 			final InlineLayoutBox box = (InlineLayoutBox) styleable;
 			final int width = Math.max(box.getInlineWidth(), box.getWidth());
-			return new ElementBox(box.getElement(), box.getX(), box.getAbsY(), width, box.getHeight());
+			return new ElementBox(box.getElement(), box.getAbsX(), box.getAbsY(), width, box.getHeight());
 		}
 		if (styleable instanceof Box) {
 			final Box box = (Box) styleable;
-			return new ElementBox(box.getElement(), box.getX(), box.getAbsY(), box.getWidth(), box.getHeight());
+			return new ElementBox(box.getElement(), box.getAbsX(), box.getAbsY(), box.getWidth(), box.getHeight());
 		}
 		return null;
 	}
