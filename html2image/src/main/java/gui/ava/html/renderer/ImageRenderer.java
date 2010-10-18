@@ -35,4 +35,16 @@ public interface ImageRenderer extends LayoutHolder {
 	void saveImage(File file);
 
 	ImageRendererImpl clearCache();
+
+	float getWriteCompressionQuality();
+
+	ImageRenderer setWriteCompressionQuality(float writeCompressionQuality);
+
+	int getWriteCompressionMode();
+
+	ImageRenderer setWriteCompressionMode(int writeCompressionMode);
+
+	String getWriteCompressionType();
+
+	ImageRenderer setWriteCompressionType(String writeCompressionType);
 }
