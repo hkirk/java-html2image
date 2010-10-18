@@ -40,10 +40,10 @@
 
 	<distributionManagement>
 		<repository>
-			<id>yoava</id>
-			<name>AOL yoava</name>
+			<id>jfrog-third-party-releases-local</id>
 			<!--<url>http://yoava.artifactoryonline.com/yoava/libs-releases-local</url>-->
-			<url>http://yoava.artifactoryonline.com/yoava/libs-snapshots-local</url>
+			<!--<url>http://yoava.artifactoryonline.com/yoava/libs-snapshots-local</url>-->
+			<url>http://repo.jfrog.org/artifactory/third-party-releases-local</url>
 		</repository>
 	</distributionManagement>
 
