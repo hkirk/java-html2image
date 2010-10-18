@@ -1,6 +1,7 @@
 package gui.ava.html.parser;
 
 import org.apache.xerces.parsers.DOMParser;
+import org.cyberneko.html.HTMLConfiguration;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -21,21 +22,7 @@ public class HtmlParserImpl implements HtmlParser {
 	private Document document;
 
 	public HtmlParserImpl() {
-//		try {
-//			domParser = new DOMParser();
-//			domParser.setFeature(Constants.SAX_FEATURE_PREFIX + Constants.VALIDATION_FEATURE, false);
-//			domParser.setFeature(Constants.XERCES_FEATURE_PREFIX + Constants.CONTINUE_AFTER_FATAL_ERROR_FEATURE, true);
-//			domParser.setFeature(Constants.XERCES_FEATURE_PREFIX + Constants.LOAD_DTD_GRAMMAR_FEATURE, false);
-//			domParser.setFeature(Constants.XERCES_FEATURE_PREFIX + Constants.LOAD_EXTERNAL_DTD_FEATURE, false);
-//			domParser.setFeature(Constants.XERCES_FEATURE_PREFIX + Constants.SCHEMA_VALIDATION_FEATURE, false);
-//		} catch (SAXNotRecognizedException e) {
-//			throw new ParseException("Can't create HtmlParserImpl", e);
-//		} catch (SAXNotSupportedException e) {
-//			throw new ParseException("Can't create HtmlParserImpl", e);
-//		}
-
-		// todo yoava >> fix uppercase + doctype
-		domParser = new org.cyberneko.html.parsers.DOMParser();
+		domParser = new DOMParser(new HTMLConfiguration());
 		try {
 			domParser.setProperty("http://cyberneko.org/html/properties/names/elems", "lower");
 		} catch (SAXNotRecognizedException e) {
