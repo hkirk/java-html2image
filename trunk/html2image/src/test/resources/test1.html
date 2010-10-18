@@ -7,6 +7,16 @@
 			font-family: arial;
 			font-size: 13px;
 		}
+
+		.link2 {
+			background: #fafad2;
+			border: groove;
+			position: absolute;
+			top: 100px;
+			left: 100px;
+			width: 100px;
+			height: 50px;
+		}
 	</style>
 </head>
 <body>
@@ -14,5 +24,15 @@
 	<strong>Hello</strong>
 	<span style="color: red;">World!</span>
 </p>
+
+<div class="links">
+	<a href="javascript: alert('Clicked!')">[Link with href]</a>
+	|
+	<button onclick="alert('Clicked!')">Button</button>
+	|
+	<input type="button" value="Input Button" onclick="alert('Clicked!')">
+
+	<a class="link2" onclick="alert('Clicked!')">[Link with onclick]</a>
+</div>
 </body>
 </html>

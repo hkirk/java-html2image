@@ -33,4 +33,6 @@ public interface ImageRenderer extends LayoutHolder {
 	void saveImage(String filename);
 
 	void saveImage(File file);
+
+	ImageRendererImpl clearCache();
 }

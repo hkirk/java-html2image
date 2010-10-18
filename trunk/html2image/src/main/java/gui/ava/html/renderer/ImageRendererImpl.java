@@ -31,6 +31,10 @@ public class ImageRendererImpl implements ImageRenderer {
 	private String writeCompressionType = null;
 	private Box rootBox;
 
+	private BufferedImage bufferedImage;
+	private int cacheImageType = -1;
+	private Document cacheDocument;
+
 	public ImageRendererImpl(DocumentHolder documentHolder) {
 		this.documentHolder = documentHolder;
 	}
@@ -106,31 +110,34 @@ public class ImageRendererImpl implements ImageRenderer {
 
 	@Override
 	public BufferedImage getBufferedImage(int imageType) {
-		// todo cache
-		Graphics2DRenderer renderer = new Graphics2DRenderer();
 		final Document document = documentHolder.getDocument();
-		renderer.setDocument(document, document.getDocumentURI());
-		Dimension dimension = new Dimension(width, height);
-		BufferedImage bufferedImage = new BufferedImage(width, height, imageType);
+		if (bufferedImage != null || cacheImageType != imageType || cacheDocument != document) {
+			cacheImageType = imageType;
+			cacheDocument = document;
+			Graphics2DRenderer renderer = new Graphics2DRenderer();
+			renderer.setDocument(document, document.getDocumentURI());
+			Dimension dimension = new Dimension(width, height);
+			bufferedImage = new BufferedImage(width, height, imageType);
 
-		if (autoHeight) {
-			// do layout with temp buffer
+			if (autoHeight) {
+				// do layout with temp buffer
+				Graphics2D graphics2D = (Graphics2D) bufferedImage.getGraphics();
+				renderer.layout(graphics2D, new Dimension(width, height));
+				graphics2D.dispose();
+
+				Rectangle size = renderer.getMinimumSize();
+				final int autoWidth = (int) size.getWidth();
+				final int autoHeight = (int) size.getHeight();
+				bufferedImage = new BufferedImage(autoWidth, autoHeight, imageType);
+				dimension = new Dimension(autoWidth, autoHeight);
+			}
+
 			Graphics2D graphics2D = (Graphics2D) bufferedImage.getGraphics();
-			renderer.layout(graphics2D, new Dimension(width, height));
+			renderer.layout(graphics2D, dimension);
+			renderer.render(graphics2D);
+			rootBox = renderer.getPanel().getRootBox();
 			graphics2D.dispose();
-
-			Rectangle size = renderer.getMinimumSize();
-			final int autoWidth = (int) size.getWidth();
-			final int autoHeight = (int) size.getHeight();
-			bufferedImage = new BufferedImage(autoWidth, autoHeight, imageType);
-			dimension = new Dimension(autoWidth, autoHeight);
 		}
-
-		Graphics2D graphics2D = (Graphics2D) bufferedImage.getGraphics();
-		renderer.layout(graphics2D, dimension);
-		renderer.render(graphics2D);
-		rootBox = renderer.getPanel().getRootBox();
-		graphics2D.dispose();
 		return bufferedImage;
 	}
 
@@ -140,6 +147,15 @@ public class ImageRendererImpl implements ImageRenderer {
 			getBufferedImage();
 		}
 		return rootBox;
+	}
+
+	@Override
+	public ImageRendererImpl clearCache() {
+		bufferedImage = null;
+		rootBox = null;
+		cacheDocument = null;
+		cacheImageType = -1;
+		return this;
 	}
 
 	public BufferedImage getBufferedImage() {
