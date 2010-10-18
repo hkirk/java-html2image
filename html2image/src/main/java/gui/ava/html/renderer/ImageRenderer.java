@@ -7,7 +7,7 @@ import java.io.OutputStream;
 /**
  * @author Yoav Aharoni
  */
-public interface ImageRenderer {
+public interface ImageRenderer extends LayoutHolder {
 	int getWidth();
 
 	ImageRenderer setWidth(int width);

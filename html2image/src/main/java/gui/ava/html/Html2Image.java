@@ -31,7 +31,7 @@ public class Html2Image {
 
 	public HtmlImageMap getHtmlImageMap() {
 		if (htmlImageMap == null) {
-			htmlImageMap = new HtmlImageMapImpl();
+			htmlImageMap = new HtmlImageMapImpl(getImageRenderer());
 		}
 		return htmlImageMap;
 	}
