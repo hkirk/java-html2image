@@ -3,6 +3,7 @@ package gui.ava.html.renderer;
 import gui.ava.html.exception.RenderException;
 import gui.ava.html.parser.DocumentHolder;
 import org.w3c.dom.Document;
+import org.xhtmlrenderer.render.Box;
 import org.xhtmlrenderer.simple.Graphics2DRenderer;
 import org.xhtmlrenderer.util.FSImageWriter;
 
@@ -28,6 +29,7 @@ public class ImageRendererImpl implements ImageRenderer {
 	private float writeCompressionQuality = 1.0f;
 	private int writeCompressionMode = ImageWriteParam.MODE_COPY_FROM_METADATA;
 	private String writeCompressionType = null;
+	private Box rootBox;
 
 	public ImageRendererImpl(DocumentHolder documentHolder) {
 		this.documentHolder = documentHolder;
@@ -104,6 +106,7 @@ public class ImageRendererImpl implements ImageRenderer {
 
 	@Override
 	public BufferedImage getBufferedImage(int imageType) {
+		// todo cache
 		Graphics2DRenderer renderer = new Graphics2DRenderer();
 		final Document document = documentHolder.getDocument();
 		renderer.setDocument(document, document.getDocumentURI());
@@ -126,10 +129,18 @@ public class ImageRendererImpl implements ImageRenderer {
 		Graphics2D graphics2D = (Graphics2D) bufferedImage.getGraphics();
 		renderer.layout(graphics2D, dimension);
 		renderer.render(graphics2D);
+		rootBox = renderer.getPanel().getRootBox();
 		graphics2D.dispose();
 		return bufferedImage;
 	}
 
+	@Override
+	public Box getRootBox() {
+		if (rootBox == null) {
+			getBufferedImage();
+		}
+		return rootBox;
+	}
 
 	public BufferedImage getBufferedImage() {
 		return getBufferedImage(BufferedImage.TYPE_INT_ARGB);
