@@ -105,7 +105,6 @@ public class ImageRendererImpl implements ImageRenderer {
 	@Override
 	public BufferedImage getBufferedImage(int imageType) {
 		Graphics2DRenderer renderer = new Graphics2DRenderer();
-		parser.removeDocumentType();
 		final Document document = parser.getDocument();
 		renderer.setDocument(document, document.getDocumentURI());
 		Dimension dimension = new Dimension(width, height);
