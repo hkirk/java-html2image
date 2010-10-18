@@ -45,25 +45,27 @@ public class HtmlImageMapImpl implements HtmlImageMap {
 	public void saveImageMap(Writer writer, String mapName, String imageURL) {
 		try {
 			writer.append("<map name=\"").append(mapName).append("\">\n");
-			for (ElementBox elementBox : getClickableBoxes()) {
-				final int x1 = elementBox.getLeft();
-				final int y1 = elementBox.getTop();
-				final int x2 = x1 + elementBox.getWidth();
-				final int y2 = y1 + elementBox.getHeight();
-				writer.append(format("<area coords=\"%s,%s,%s,%s\" shape=\"rect\"", x1, y1, x2, y2));
-				final NamedNodeMap attributes = elementBox.getElement().getAttributes();
-				for (int i = 0, l = attributes.getLength(); i < l; i++) {
-					final Node node = attributes.item(i);
-					final String name = node.getNodeName();
-					final String value = node.getNodeValue();
-					if (name != null && value != null) {
-						final String lowerName = name.toLowerCase();
-						if (allowedAttributes.contains(lowerName)) {
-							writer.append(" ").append(lowerName).append("=\"").append(value.replace("\"", "&quot;")).append("\"");
+			for (Collection<ElementBox> boxes : getClickableBoxes().values()) {
+				for (ElementBox elementBox : boxes) {
+					final int x1 = elementBox.getLeft();
+					final int y1 = elementBox.getTop();
+					final int x2 = elementBox.getRight();
+					final int y2 = elementBox.getBottom();
+					writer.append(format("<area coords=\"%s,%s,%s,%s\" shape=\"rect\"", x1, y1, x2, y2));
+					final NamedNodeMap attributes = elementBox.getElement().getAttributes();
+					for (int i = 0, l = attributes.getLength(); i < l; i++) {
+						final Node node = attributes.item(i);
+						final String name = node.getNodeName();
+						final String value = node.getNodeValue();
+						if (name != null && value != null) {
+							final String lowerName = name.toLowerCase();
+							if (allowedAttributes.contains(lowerName)) {
+								writer.append(" ").append(lowerName).append("=\"").append(value.replace("\"", "&quot;")).append("\"");
+							}
 						}
 					}
+					writer.append(">\n");
 				}
-				writer.append(">\n");
 			}
 			writer.append("</map>\n");
 		} catch (IOException e) {
@@ -116,69 +118,94 @@ public class HtmlImageMapImpl implements HtmlImageMap {
 	}
 
 	@Override
-	public Collection<ElementBox> getClickableBoxes() {
-		final LinkedList<ElementBox> boxes = new LinkedList<ElementBox>();
+	public Map<Element, Collection<ElementBox>> getClickableBoxes() {
 		final Box rootBox = layoutHolder.getRootBox();
-		recursiveAddLinks(rootBox, boxes, new HashSet<Styleable>());
+		final HashMap<Element, Collection<ElementBox>> boxes = new HashMap<Element, Collection<ElementBox>>();
+		addClickableElements(rootBox, boxes, new HashSet<Styleable>());
 		return boxes;
 	}
 
 	@SuppressWarnings({"unchecked"})
-	private void recursiveAddLinks(Styleable styleable, LinkedList<ElementBox> boxes, Set<Styleable> visited) {
+	private void addClickableElements(Styleable styleable, HashMap<Element, Collection<ElementBox>> boxes, Set<Styleable> visited) {
 		if (styleable == null || visited.contains(styleable)) {
 			return;
 		}
 		visited.add(styleable);
 
-		if (isClickable(styleable)) {
-			final ElementBox elementBox = createElementBox(styleable);
-			if (elementBox != null) {
-				boxes.add(elementBox);
-			}
-		}
+		addIfClickable(styleable, boxes);
+
 		if (styleable instanceof Box) {
 			for (Styleable child : (List<Styleable>) ((Box) styleable).getChildren()) {
-				recursiveAddLinks(child, boxes, visited);
+				addClickableElements(child, boxes, visited);
 			}
 		}
 		if (styleable instanceof InlineLayoutBox) {
 			for (Object child : (List<?>) ((InlineLayoutBox) styleable).getInlineChildren()) {
 				if (child instanceof Styleable) {
-					recursiveAddLinks((Styleable) child, boxes, visited);
+					addClickableElements((Styleable) child, boxes, visited);
 				}
 			}
 		} else if (styleable instanceof BlockBox) {
 			final List<Styleable> content = (List<Styleable>) ((BlockBox) styleable).getInlineContent();
 			if (content != null) {
 				for (Styleable child : content) {
-					recursiveAddLinks(child, boxes, visited);
+					addClickableElements(child, boxes, visited);
 				}
 			}
 		} else if (styleable instanceof LineBox) {
 			for (Styleable child : (List<Styleable>) ((LineBox) styleable).getNonFlowContent()) {
-				recursiveAddLinks(child, boxes, visited);
+				addClickableElements(child, boxes, visited);
 			}
 		}
 	}
 
-	private ElementBox createElementBox(Styleable styleable) {
+	private void addIfClickable(Styleable styleable, HashMap<Element, Collection<ElementBox>> boxes) {
+		final Element clickable = getClickableElement(styleable);
+		if (clickable == null) {
+			return;
+		}
+		final ElementBox elementBox = createElementBox(styleable, clickable);
+		if (elementBox == null || elementBox.isEmpty()) {
+			return;
+		}
+		Collection<ElementBox> elementBoxes = boxes.get(clickable);
+		if (elementBoxes == null) {
+			elementBoxes = new ArrayList<ElementBox>();
+			boxes.put(clickable, elementBoxes);
+			elementBoxes.add(elementBox);
+			return;
+		}
+		if (!elementBox.containedIn(elementBoxes)) {
+			elementBoxes.add(elementBox);
+		}
+	}
+
+	private ElementBox createElementBox(Styleable styleable, Element element) {
 		if (styleable instanceof InlineLayoutBox) {
 			final InlineLayoutBox box = (InlineLayoutBox) styleable;
 			final int width = Math.max(box.getInlineWidth(), box.getWidth());
-			return new ElementBox(box.getElement(), box.getAbsX(), box.getAbsY(), width, box.getHeight());
+			return new ElementBox(element, box.getAbsX(), box.getAbsY(), width, box.getHeight());
 		}
 		if (styleable instanceof Box) {
 			final Box box = (Box) styleable;
-			return new ElementBox(box.getElement(), box.getAbsX(), box.getAbsY(), box.getWidth(), box.getHeight());
+			return new ElementBox(element, box.getAbsX(), box.getAbsY(), box.getWidth(), box.getHeight());
 		}
 		return null;
 	}
 
-	private boolean isClickable(Styleable box) {
-		final Element element = box.getElement();
-		if (element == null) {
-			return false;
+	private Element getClickableElement(Styleable box) {
+		Element element = box.getElement();
+		while (element != null) {
+			if (isClickable(element)) {
+				return element;
+			}
+			final Node parentNode = element.getParentNode();
+			element = parentNode instanceof Element ? (Element) parentNode : null;
 		}
+		return null;
+	}
+
+	private boolean isClickable(Element element) {
 		for (String attribute : searchedAttributes) {
 			final String value = element.getAttribute(attribute);
 			if (StringUtils.isNotBlank(value)) {
