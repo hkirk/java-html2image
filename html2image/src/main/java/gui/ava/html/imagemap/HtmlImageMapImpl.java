@@ -23,7 +23,7 @@ import static java.lang.String.format;
 public class HtmlImageMapImpl implements HtmlImageMap {
 	private static Set<String> searchedAttributes = stringSet("href", "onclick", "ondblclick", "onmousedown", "onmouseup");
 	private static Set<String> allowedAttributes = stringSet(
-			"href", "target", "title", "class", "style", "tabindex", "dir", "lang", "accesskey",
+			"href", "target", "title", "class", "tabindex", "dir", "lang", "accesskey",
 			"onblur", "onclick", "ondblclick", "onfocus",
 			"onmousedown", "onmousemove", "onmouseout", "onmouseover", "onmouseup",
 			"onkeydown", "onkeypress", "onkeyup");
