@@ -22,7 +22,6 @@ public class PdfRendererImpl implements PdfRenderer {
 	public void saveToPDF(OutputStream outputStream, boolean closeStream) {
 		try {
 			ITextRenderer renderer = new ITextRenderer();
-			parser.removeDocumentType();
 			final Document document = parser.getDocument();
 			renderer.setDocument(document, document.getDocumentURI());
 			renderer.layout();
