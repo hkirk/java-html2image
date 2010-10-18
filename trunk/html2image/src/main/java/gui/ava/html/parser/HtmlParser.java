@@ -1,5 +1,6 @@
 package gui.ava.html.parser;
 
+import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
 
 import java.io.File;
@@ -11,9 +12,11 @@ import java.net.URL;
 /**
  * @author Yoav Aharoni
  */
-public interface HtmlParser {
+public interface HtmlParser extends DocumentHolder {
 
-	Document getDocument();
+	DOMParser getDomParser();
+
+	void setDomParser(DOMParser domParser);
 
 	void setDocument(Document document);
 
@@ -30,6 +33,4 @@ public interface HtmlParser {
 	void loadHtml(String html);
 
 	void loadURI(String uri);
-
-	void removeDocumentType();
 }

@@ -2,7 +2,7 @@ package gui.ava.html.pdf;
 
 import com.lowagie.text.DocumentException;
 import gui.ava.html.exception.RenderException;
-import gui.ava.html.parser.HtmlParser;
+import gui.ava.html.parser.DocumentHolder;
 import org.w3c.dom.Document;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
@@ -12,17 +12,17 @@ import java.io.*;
  * @author Yoav Aharoni
  */
 public class PdfRendererImpl implements PdfRenderer {
-	private HtmlParser parser;
+	private DocumentHolder documentHolder;
 
-	public PdfRendererImpl(HtmlParser parser) {
-		this.parser = parser;
+	public PdfRendererImpl(DocumentHolder documentHolder) {
+		this.documentHolder = documentHolder;
 	}
 
 	@Override
 	public void saveToPDF(OutputStream outputStream, boolean closeStream) {
 		try {
 			ITextRenderer renderer = new ITextRenderer();
-			final Document document = parser.getDocument();
+			final Document document = documentHolder.getDocument();
 			renderer.setDocument(document, document.getDocumentURI());
 			renderer.layout();
 			renderer.createPDF(outputStream);

@@ -1,7 +1,7 @@
 package gui.ava.html.renderer;
 
 import gui.ava.html.exception.RenderException;
-import gui.ava.html.parser.HtmlParser;
+import gui.ava.html.parser.DocumentHolder;
 import org.w3c.dom.Document;
 import org.xhtmlrenderer.simple.Graphics2DRenderer;
 import org.xhtmlrenderer.util.FSImageWriter;
@@ -18,7 +18,7 @@ public class ImageRendererImpl implements ImageRenderer {
 	public static final int DEFAULT_WIDTH = 1024;
 	public static final int DEFAULT_HEIGHT = 768;
 
-	private HtmlParser parser;
+	private DocumentHolder documentHolder;
 
 	private int width = DEFAULT_WIDTH;
 	private int height = DEFAULT_HEIGHT;
@@ -29,8 +29,8 @@ public class ImageRendererImpl implements ImageRenderer {
 	private int writeCompressionMode = ImageWriteParam.MODE_COPY_FROM_METADATA;
 	private String writeCompressionType = null;
 
-	public ImageRendererImpl(HtmlParser parser) {
-		this.parser = parser;
+	public ImageRendererImpl(DocumentHolder documentHolder) {
+		this.documentHolder = documentHolder;
 	}
 
 	@Override
@@ -105,7 +105,7 @@ public class ImageRendererImpl implements ImageRenderer {
 	@Override
 	public BufferedImage getBufferedImage(int imageType) {
 		Graphics2DRenderer renderer = new Graphics2DRenderer();
-		final Document document = parser.getDocument();
+		final Document document = documentHolder.getDocument();
 		renderer.setDocument(document, document.getDocumentURI());
 		Dimension dimension = new Dimension(width, height);
 		BufferedImage bufferedImage = new BufferedImage(width, height, imageType);

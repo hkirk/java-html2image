@@ -1,11 +1,11 @@
 package gui.ava.html.parser;
 
-import org.cyberneko.html.parsers.DOMParser;
+import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
-import org.w3c.dom.DocumentType;
-import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 
 import java.io.*;
 import java.net.URI;
@@ -17,11 +17,42 @@ import static java.lang.String.format;
  * @author Yoav Aharoni
  */
 public class HtmlParserImpl implements HtmlParser {
-	private DOMParser domParser = new DOMParser();
+	private DOMParser domParser;
 	private Document document;
 
+	public HtmlParserImpl() {
+//		try {
+//			domParser = new DOMParser();
+//			domParser.setFeature(Constants.SAX_FEATURE_PREFIX + Constants.VALIDATION_FEATURE, false);
+//			domParser.setFeature(Constants.XERCES_FEATURE_PREFIX + Constants.CONTINUE_AFTER_FATAL_ERROR_FEATURE, true);
+//			domParser.setFeature(Constants.XERCES_FEATURE_PREFIX + Constants.LOAD_DTD_GRAMMAR_FEATURE, false);
+//			domParser.setFeature(Constants.XERCES_FEATURE_PREFIX + Constants.LOAD_EXTERNAL_DTD_FEATURE, false);
+//			domParser.setFeature(Constants.XERCES_FEATURE_PREFIX + Constants.SCHEMA_VALIDATION_FEATURE, false);
+//		} catch (SAXNotRecognizedException e) {
+//			throw new ParseException("Can't create HtmlParserImpl", e);
+//		} catch (SAXNotSupportedException e) {
+//			throw new ParseException("Can't create HtmlParserImpl", e);
+//		}
+
+		// todo yoava >> fix uppercase + doctype
+		domParser = new org.cyberneko.html.parsers.DOMParser();
+		try {
+			domParser.setProperty("http://cyberneko.org/html/properties/names/elems", "lower");
+		} catch (SAXNotRecognizedException e) {
+			throw new ParseException("Can't create HtmlParserImpl", e);
+		} catch (SAXNotSupportedException e) {
+			throw new ParseException("Can't create HtmlParserImpl", e);
+		}
+	}
+
+	@Override
 	public DOMParser getDomParser() {
 		return domParser;
+	}
+
+	@Override
+	public void setDomParser(DOMParser domParser) {
+		this.domParser = domParser;
 	}
 
 	@Override
@@ -99,14 +130,5 @@ public class HtmlParserImpl implements HtmlParser {
 	@Override
 	public void loadHtml(String html) {
 		load(new StringReader(html));
-	}
-
-
-	@Override
-	public void removeDocumentType() {
-		final Node firstChild = document.getFirstChild();
-		if (firstChild instanceof DocumentType) {
-			document.removeChild(firstChild);
-		}
 	}
 }
