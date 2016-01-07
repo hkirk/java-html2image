@@ -131,15 +131,18 @@ public class HtmlImageGenerator {
     public void saveAsImage(File file) {
         BufferedImage image = getBufferedImage();
 
-        BufferedImage img = getBufferedImage();
+        BufferedImage bufferedImageToWrite = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+        bufferedImageToWrite.createGraphics().drawImage(image, 0, 0, Color.WHITE, null);
+
+        final String formatName = FormatNameUtil.formatForFilename(file.getName());
+
         try {
-            final String formatName = FormatNameUtil.formatForFilename(file.getName());
-            ImageIO.write(img, formatName, file);
+            if (!ImageIO.write(bufferedImageToWrite, formatName, file))
+                throw new IOException("No formatter for specified file type [" + formatName + "] available");
         } catch (IOException e) {
             throw new RuntimeException(String.format("Exception while saving '%s' image", file), e);
         }
-        }
-
+    }
 
     protected void onDocumentLoad() {
     }
