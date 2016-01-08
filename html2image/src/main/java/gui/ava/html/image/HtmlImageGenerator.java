@@ -42,7 +42,7 @@ public class HtmlImageGenerator {
     }
 
     public void setSize(Dimension dimension) {
-        editorPane.setSize(dimension);
+        editorPane.setPreferredSize(dimension);
     }
 
     public void loadUrl(URL url) {
@@ -62,7 +62,9 @@ public class HtmlImageGenerator {
     }
 
     public void loadHtml(String html) {
+        editorPane.setEditable(false);
         editorPane.setText(html);
+        editorPane.setContentType("text/html");
         onDocumentLoad();
     }
 
@@ -153,10 +155,11 @@ public class HtmlImageGenerator {
 
     public BufferedImage getBufferedImage() {
         Dimension prefSize = editorPane.getPreferredSize();
-        BufferedImage img = new BufferedImage(prefSize.width, editorPane.getPreferredSize().height, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage img = new BufferedImage(prefSize.width, prefSize.height, BufferedImage.TYPE_INT_ARGB);
         Graphics graphics = img.getGraphics();
         editorPane.setSize(prefSize);
         editorPane.paint(graphics);
+        graphics.dispose();
         return img;
     }
 
