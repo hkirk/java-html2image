@@ -154,12 +154,21 @@ public class HtmlImageGenerator {
     }
 
     public BufferedImage getBufferedImage() {
-        Dimension prefSize = editorPane.getPreferredSize();
+        JFrame frame = new JFrame();
+        frame.setPreferredSize(editorPane.getPreferredSize());
+        frame.setUndecorated(true);
+        frame.add(editorPane);
+        frame.pack();
+
+        Dimension prefSize = frame.getPreferredSize();
         BufferedImage img = new BufferedImage(prefSize.width, prefSize.height, BufferedImage.TYPE_INT_ARGB);
         Graphics graphics = img.getGraphics();
-        editorPane.setSize(prefSize);
-        editorPane.paint(graphics);
-        graphics.dispose();
+
+        frame.setVisible(true);
+        frame.paint(graphics);
+        frame.setVisible(false);
+        frame.dispose();
+
         return img;
     }
 
@@ -178,5 +187,17 @@ public class HtmlImageGenerator {
             }
         });
         return editorPane;
+    }
+
+    protected void show() {
+        JFrame.setDefaultLookAndFeelDecorated(true);
+        JFrame frame = new JFrame();
+        frame.setTitle("My First Swing Application");
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        JLabel label = new JLabel("Welcome");
+        frame.add(label);
+        frame.add(editorPane);
+        frame.pack();
+        frame.setVisible(true);
     }
 }
