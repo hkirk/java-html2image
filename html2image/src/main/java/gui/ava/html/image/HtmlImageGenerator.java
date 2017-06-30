@@ -189,7 +189,7 @@ public class HtmlImageGenerator {
         return editorPane;
     }
 
-    protected void show() {
+    public void show() {
         JFrame.setDefaultLookAndFeelDecorated(true);
         JFrame frame = new JFrame();
         frame.setTitle("My First Swing Application");
