@@ -89,3 +89,5 @@ You can download Html2Image from the download page or use it as Maven dependency
    </repository>
 </repositories>
 ```
+
+License: GNU Lesser GPL
