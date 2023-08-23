@@ -1,5 +1,6 @@
 package gui.ava.html.image;
 
+import gui.ava.html.Html2Image;
 import gui.ava.html.image.util.FormatNameUtil;
 import gui.ava.html.image.util.SynchronousHTMLEditorKit;
 import gui.ava.html.link.LinkInfo;
@@ -23,9 +24,15 @@ import java.util.List;
  */
 public class HtmlImageGenerator {
     private JEditorPane editorPane;
+    private Color backgroundColor = Color.WHITE;
     static final Dimension DEFAULT_SIZE = new Dimension(800, 800);
 
     public HtmlImageGenerator() {
+        editorPane = createJEditorPane();
+    }
+
+    public HtmlImageGenerator(Color backgroundColor) {
+        this.backgroundColor = backgroundColor;
         editorPane = createJEditorPane();
     }
 
@@ -133,14 +140,15 @@ public class HtmlImageGenerator {
     public void saveAsImage(File file) {
         BufferedImage image = getBufferedImage();
 
-        BufferedImage bufferedImageToWrite = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
-        bufferedImageToWrite.createGraphics().drawImage(image, 0, 0, Color.WHITE, null);
+        BufferedImage bufferedImageToWrite = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        bufferedImageToWrite.createGraphics().drawImage(image, 0, 0, this.backgroundColor, null);
 
         final String formatName = FormatNameUtil.formatForFilename(file.getName());
 
         try {
-            if (!ImageIO.write(bufferedImageToWrite, formatName, file))
+            if (!ImageIO.write(bufferedImageToWrite, formatName, file)) {
                 throw new IOException("No formatter for specified file type [" + formatName + "] available");
+            }
         } catch (IOException e) {
             throw new RuntimeException(String.format("Exception while saving '%s' image", file), e);
         }
@@ -155,6 +163,7 @@ public class HtmlImageGenerator {
 
     public BufferedImage getBufferedImage() {
         JFrame frame = new JFrame();
+        frame.getRootPane().setOpaque(false);
         frame.setPreferredSize(editorPane.getPreferredSize());
         frame.setUndecorated(true);
         frame.add(editorPane);
@@ -176,6 +185,7 @@ public class HtmlImageGenerator {
         final JEditorPane editorPane = new JEditorPane();
         editorPane.setSize(getDefaultSize());
         editorPane.setEditable(false);
+        editorPane.setBackground(this.backgroundColor);
         final SynchronousHTMLEditorKit kit = new SynchronousHTMLEditorKit();
         editorPane.setEditorKitForContentType("text/html", kit);
         editorPane.setContentType("text/html");
